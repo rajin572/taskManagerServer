@@ -37,12 +37,10 @@ async function run() {
             res.send(result)
         })
 
-        //to post new service on the website and database
         app.post('/task', async (req, res) => {
             const order = req.body;
             const result = await myTaskCollection.insertOne(order)
             res.send(result)
-            console.log(result);
         })
 
         app.get('/myTask', async (req, res) => {
@@ -55,6 +53,22 @@ async function run() {
             const cursor = myTaskCollection.find(query)
             const mytask = await cursor.toArray()
             res.send(mytask)
+        })
+
+        app.delete('/myTask/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await myTaskCollection.deleteOne(query)
+            res.send(result)
+        })
+
+        app.post('/completeTask', async (req, res) => {
+            const order = req.body;
+            const result = await completeTaskCollection.insertOne(order)
+            res.send(result)
+            console.log(result);
         })
 
     } finally {
