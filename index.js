@@ -43,6 +43,13 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/completeTask', async (req, res) => {
+            const order = req.body;
+            const result = await completeTaskCollection.insertOne(order)
+            res.send(result)
+            console.log(result);
+        })
+
         app.get('/myTask', async (req, res) => {
             let query = {}
             if (req.query.email) {
@@ -55,6 +62,18 @@ async function run() {
             res.send(mytask)
         })
 
+        app.get('/myCompleteTask', async (req, res) => {
+            let query = {}
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            const cursor = completeTaskCollection.find(query)
+            const mytask = await cursor.toArray()
+            res.send(mytask)
+        })
+
         app.delete('/myTask/:id', async (req, res) => {
             const id = req.params.id;
             const query = {
@@ -63,13 +82,15 @@ async function run() {
             const result = await myTaskCollection.deleteOne(query)
             res.send(result)
         })
-
-        app.post('/completeTask', async (req, res) => {
-            const order = req.body;
-            const result = await completeTaskCollection.insertOne(order)
+        app.delete('/myCompleteTask/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await completeTaskCollection.deleteOne(query)
             res.send(result)
-            console.log(result);
         })
+
 
     } finally {
 
